@@ -38,5 +38,6 @@ function typeEffect() {
   setTimeout(typeEffect, speed);
 }
 
+
 // start typing
 typeEffect();

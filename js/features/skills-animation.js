@@ -13,4 +13,5 @@ function animateSkills() {
     });
 }
 
+
 window.addEventListener("scroll", animateSkills);

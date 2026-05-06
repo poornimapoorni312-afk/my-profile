@@ -20,6 +20,7 @@ function initContactValidation() {
 
         formMessage.textContent = "";
         formMessage.className = "text-sm";
+        
 
         //Name Validation
         if (name === "") {

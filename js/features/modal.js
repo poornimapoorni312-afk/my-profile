@@ -39,6 +39,7 @@ function initModal() {
                 });
                 console.log("Modal opened successfully");
             }
+            
                     
     
 

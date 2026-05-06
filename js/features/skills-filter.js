@@ -28,6 +28,7 @@ function renderFilters(data) {
 
             renderSkills(filtered);
         });
+        
 
         filtersContainer.appendChild(btn);
     });

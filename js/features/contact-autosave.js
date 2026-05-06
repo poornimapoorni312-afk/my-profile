@@ -20,6 +20,7 @@ function saveData() {
     email: emailInput.value
   };
 
+
   localStorage.setItem("contactForm", JSON.stringify(formData));
 }
 
