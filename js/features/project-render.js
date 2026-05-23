@@ -1,83 +1,98 @@
 function renderProject(data = projectsData) {
     const projectsContainer = document.getElementById("projects-container");
-
-    if (!projectsContainer) {
-        console.log("Projects were not found");
-        return;
-    }
-
+    if (!projectsContainer) { console.log("Projects were not found"); return; }
     projectsContainer.textContent = "";
 
     data.forEach(function (project) {
+        const isLive = project.status === "Live";
+        const statusColor = isLive ? "#c8f542" : "#f59e0b";
+        const statusBg = isLive ? "rgba(200,245,66,0.12)" : "rgba(245,158,11,0.12)";
 
         const card = document.createElement("div");
-        card.className = "relative p-8 pt-12 text-center bg-white rounded-3xl shadow-lg";
+        card.className = "project-card";
+        card.style.cssText = "background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:28px;transition:all 0.3s ease;cursor:pointer;position:relative;display:flex;flex-direction:column;gap:12px;";
 
         card.addEventListener("click", () => {
-            console.log("clicked:", project.name);
             saveRecentProject(project);
         });
 
-        const projectName = document.createElement("h2");
-        projectName.className = "text-xl font-bold mb-2";
-        projectName.textContent = project.name;
+        // Status badge
+        const statusBadge = document.createElement("span");
+        statusBadge.style.cssText = `position:absolute;top:20px;right:20px;font-size:11px;font-weight:700;padding:4px 12px;border-radius:50px;background:${statusBg};color:${statusColor};letter-spacing:.05em;font-family:'Syne',sans-serif;`;
+        statusBadge.textContent = project.status;
 
-        const projectCategory = document.createElement("h5");
-        projectCategory.className = "text-sm mb-2 text-blue-800";
-        projectCategory.textContent = project.category;
+        // Category
+        const cat = document.createElement("span");
+        cat.style.cssText = "font-size:11px;font-weight:600;color:#6b7280;letter-spacing:.1em;text-transform:uppercase;";
+        cat.textContent = project.category;
 
-        const projectDescription = document.createElement("p");
-        projectDescription.className = "text-sm mb-2";
-        projectDescription.textContent = project.description;
+        // Name
+        const name = document.createElement("h2");
+        name.style.cssText = "font-size:20px;font-weight:800;color:#fff;font-family:'Syne',sans-serif;line-height:1.2;margin-top:2px;";
+        name.textContent = project.name;
 
-        const projectTechnologies = document.createElement("span");
-        projectTechnologies.className = "text-sm mb-2 text-green-600 block";
-        projectTechnologies.textContent = project.technologies.join(", ");
+        // Description
+        const desc = document.createElement("p");
+        desc.style.cssText = "font-size:14px;color:#9ca3af;line-height:1.6;flex:1;";
+        desc.textContent = project.description;
 
-        const statsContainer = document.createElement("div");
-        statsContainer.className =
-            "flex justify-between text-sm mt-4 bg-gray-100 px-3 py-2 rounded-lg";
+        // Tech tags
+        const techWrap = document.createElement("div");
+        techWrap.style.cssText = "display:flex;flex-wrap:wrap;gap:6px;";
+        project.technologies.forEach(t => {
+            const tag = document.createElement("span");
+            tag.style.cssText = "font-size:11px;padding:4px 12px;border-radius:50px;background:rgba(99,102,241,0.12);color:#a5b4fc;font-weight:500;";
+            tag.textContent = t;
+            techWrap.appendChild(tag);
+        });
 
-        const views = document.createElement("span");
-        views.textContent = `👁 ${project.stats?.views ?? 0}`;
+        // Stats
+        const stats = document.createElement("div");
+        stats.style.cssText = "display:flex;gap:16px;font-size:12px;color:#6b7280;padding-top:8px;border-top:1px solid rgba(255,255,255,0.05);";
+        //stats.innerHTML = `<span>👁 ${project.stats?.views ?? 0}</span><span>❤️ ${project.stats?.likes ?? 0}</span><span>🚀 ${project.stats?.visits ?? 0}</span>`;
 
-        const likes = document.createElement("span");
-        likes.textContent = `❤️ ${project.stats?.likes ?? 0}`;
+        // Links
+        const links = document.createElement("div");
+        links.style.cssText = "display:flex;gap:10px;margin-top:4px;";
 
-        const visits = document.createElement("span");
-        visits.textContent = `🚀 ${project.stats?.visits ?? 0}`;
+        const demoBtn = document.createElement("a");
+        //demoBtn.href = project.liveDemo;
+        demoBtn.target = "_blank";
+        //demoBtn.style.cssText = "font-size:13px;font-weight:700;padding:8px 18px;border-radius:50px;background:#c8f542;color:#0a0a0f;text-decoration:none;font-family:'Syne',sans-serif;transition:background 0.2s;";
+        //demoBtn.textContent = "Live Demo";
+        demoBtn.onmouseover = () => demoBtn.style.background = "#d4fa5a";
+        demoBtn.onmouseout = () => demoBtn.style.background = "#c8f542";
 
-        statsContainer.appendChild(views);
-        statsContainer.appendChild(likes);
-        statsContainer.appendChild(visits);
+        const ghBtn = document.createElement("a");
+        ghBtn.href = project.github;
+        ghBtn.target = "_blank";
+        ghBtn.style.cssText = "font-size:13px;font-weight:500;padding:8px 18px;border-radius:50px;border:1px solid rgba(255,255,255,0.12);color:#d1d5db;text-decoration:none;transition:all 0.2s;";
+        ghBtn.textContent = "GitHub";
 
-        const projectStatus = document.createElement("div");
-        projectStatus.className =
-            "absolute top-2 right-2 bg-red-500 text-white text-xs px-2 py-1 rounded-lg";
-        projectStatus.textContent = project.status;
+        links.appendChild(demoBtn);
+        links.appendChild(ghBtn);
 
-        const projectliveDemo = document.createElement("a");
-        projectliveDemo.className =
-            "inline-block mt-3 text-blue-500 text-sm px-4 py-2 bg-blue-200 rounded";
-        projectliveDemo.textContent = "Live Demo";
-        projectliveDemo.href = project.liveDemo;
-        projectliveDemo.target = "_blank";
+        card.appendChild(statusBadge);
+        card.appendChild(cat);
+        card.appendChild(name);
+        card.appendChild(desc);
+        card.appendChild(techWrap);
+        card.appendChild(stats);
+        card.appendChild(links);
 
-        const projectgithub = document.createElement("a");
-        projectgithub.className =
-            "inline-block mt-2 text-blue-500 text-sm px-4 py-2 bg-blue-200 rounded";
-        projectgithub.textContent = "GitHub";
-        projectgithub.href = project.github;
-        projectgithub.target = "_blank";
-
-        card.appendChild(projectName);
-        card.appendChild(projectCategory);
-        card.appendChild(projectDescription);
-        card.appendChild(projectTechnologies);
-        card.appendChild(statsContainer);
-        card.appendChild(projectStatus);
-        card.appendChild(projectliveDemo);
-        card.appendChild(projectgithub);
+        // Hover effects
+        card.onmouseover = () => {
+            card.style.borderColor = "rgba(200,245,66,0.25)";
+            card.style.background = "rgba(255,255,255,0.05)";
+            card.style.transform = "translateY(-4px)";
+            card.style.boxShadow = "0 20px 60px rgba(0,0,0,0.4)";
+        };
+        card.onmouseout = () => {
+            card.style.borderColor = "rgba(255,255,255,0.08)";
+            card.style.background = "rgba(255,255,255,0.03)";
+            card.style.transform = "translateY(0)";
+            card.style.boxShadow = "none";
+        };
 
         projectsContainer.appendChild(card);
     });

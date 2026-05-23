@@ -3,22 +3,23 @@ function initThemeToggle() {
     const body = document.body;
 
     const savedTheme = localStorage.getItem("portfolio-theme");
-
-    // Apply saved theme on page load
-    
-    if (savedTheme === "dark") {
-        body.classList.add("dark-mode");
+    if (savedTheme === "light") {
+        body.classList.add("light");
+        if (toggleBtn) toggleBtn.textContent = "🌙";
+    } else {
+        if (toggleBtn) toggleBtn.textContent = "☀";
     }
 
-    toggleBtn.addEventListener("click", function () {
-        body.classList.toggle("dark-mode");
-
-        // Save theme preference
-        if (body.classList.contains("dark-mode")) {
-            localStorage.setItem("portfolio-theme", "dark");
-        } else {
-            localStorage.setItem("portfolio-theme", "light");
-            console.log("light mode enabled")
-        }
-    });
+    if (toggleBtn) {
+        toggleBtn.addEventListener("click", function () {
+            body.classList.toggle("light");
+            if (body.classList.contains("light")) {
+                localStorage.setItem("portfolio-theme", "light");
+                toggleBtn.textContent = "🌙";
+            } else {
+                localStorage.setItem("portfolio-theme", "dark");
+                toggleBtn.textContent = "☀";
+            }
+        });
+    }
 }
